@@ -1,0 +1,17 @@
+{
+  "name": "neon-test",
+  "version": "1.0.0",
+  "description": "Teste de front-end para o Banco Neon",
+  "main": "gulpfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.26.0",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^4.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Diego Rocha",
+  "license": "ISC"
+}
