@@ -1,28 +1,79 @@
 'use strict';
 
-var gulp = require('gulp'),
+const gulp = require('gulp'),
   browserSync = require('browser-sync').create(),
-  sass = require('gulp-sass');
+  sass = require('gulp-sass'),
+  plumber = require('gulp-plumber'),
+  htmlmin = require('gulp-htmlmin'),
+  autoprefixer = require('gulp-autoprefixer'),
+  cleanCSS = require('gulp-clean-css'),
+  imagemin = require('gulp-imagemin'),
+  nunjucksRender = require('gulp-nunjucks-render'),
+  browserify = require('browserify'),
+  fs = require('fs');
 
-gulp.task('serve', ['sass'], function() {
-  browserSync.init({
-    server: './html'
-  });
+gulp.task(
+  'serve',
+  ['scripts', 'sass', 'html', 'fonts', 'images', 'watch'],
+  () => {
+    browserSync.init({
+      server: './dist'
+    });
+  }
+);
 
-  gulp.watch('html/sass/*.sass', ['sass']);
-  gulp.watch('html/*.html').on('change', browserSync.reload);
-});
-
-gulp.task('sass', function() {
+gulp.task('sass', () => {
   return gulp
-    .src('./html/sass/**/*.sass')
+    .src('./src/sass/**/*.sass')
+    .pipe(plumber())
     .pipe(sass.sync().on('error', sass.logError))
-    .pipe(gulp.dest('./html/css'))
+    .pipe(autoprefixer())
+    .pipe(cleanCSS())
+    .pipe(gulp.dest('./dist/css'))
     .pipe(browserSync.stream());
 });
 
-gulp.task('watch', function() {
-  gulp.watch('./html/sass/**/*.sass', ['sass']);
+gulp.task('html', () => {
+  return gulp
+    .src('./src/html/*.html')
+    .pipe(plumber())
+    .pipe(nunjucksRender({ path: ['src/html'] }))
+    .pipe(htmlmin({ collapseWhitespace: true, removeComments: true }))
+    .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('fonts', () => {
+  return gulp
+    .src('./src/fonts/**/*')
+    .pipe(plumber())
+    .pipe(gulp.dest('./dist/fonts'));
+});
+
+gulp.task('images', () => {
+  return gulp
+    .src('./src/images/**/*')
+    .pipe(plumber())
+    .pipe(
+      imagemin({
+        optimizationLevel: 3,
+        progressive: true,
+        interlaced: true
+      })
+    )
+    .pipe(gulp.dest('./dist/images'));
+});
+
+gulp.task('scripts', () => {
+  return browserify(['./src/js/main.js'])
+    .transform('babelify', { presets: ['@babel/preset-env'] })
+    .bundle()
+    .pipe(fs.createWriteStream('./dist/js/main.js'));
+});
+
+gulp.task('watch', () => {
+  gulp.watch('./src/sass/**/*.sass', ['sass']);
+  gulp.watch('./src/html/*.html', ['html']).on('change', browserSync.reload);
+  gulp.watch('./src/js/**/*.js', ['scripts']).on('change', browserSync.reload);
 });
 
 gulp.task('default', ['serve']);
