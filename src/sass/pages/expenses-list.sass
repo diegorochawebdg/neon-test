@@ -1,0 +1,83 @@
+@import '../globals/variables'
+
+.year-wrapper
+  margin: 0 auto 20px
+  text-align: center
+  max-width: 500px
+  position: relative
+  &:before
+    content: ""
+    display: block
+    width: 100%
+    height: 2px
+    background-image: radial-gradient($green 25%, transparent 45%)
+    background-repeat: no-repeat
+    background-size: 100% 1px
+    position: absolute
+    margin-top: -12px
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    line-height: 27px
+  &__year
+    font: bold 16px/1em $averta
+    margin-bottom: 8px
+    display: block
+  &__welcome-message
+    font: bold 22px/1em $averta
+    padding: 15px 0
+    display: block
+
+.expenses-list
+  &__list-item
+    background: $list_blue
+    border-radius: 20px
+    max-width: 500px
+    min-height: 510px
+    &.empty
+      display: flex
+      align-items: center
+      justify-content: center
+      background: $list_dark_blue
+      &:before
+        content: ""
+        background: url(../images/icon-calendar.png) no-repeat center
+        width: 204px
+        height: 200px
+        opacity: .3
+  &__internal-list-item
+    border-bottom: 1px solid $list_border
+    padding: 18px 20px
+    display: flex
+    align-items: center
+    &:before
+      content: ""
+      background: url(../images/icon-categoria.png) no-repeat center
+      width: 30px
+      height: 30px
+      margin-right: 20px
+    &:last-child
+      border: none
+    &:focus
+      outline: 5px auto -webkit-focus-ring-color
+  &__internal-list-text
+    flex: 1
+    font-size: 17px
+  &__internal-list-value
+    display: block
+    font-weight: bold
+    &--positive
+      color: $green
+  &__internal-list-remove-item
+    appearance: none
+    background: url(../images/icon-delete.png) no-repeat center
+    border: none
+    font-size: 0
+    //size just to improve accessibility
+    width: 48px
+    height: 48px
+    cursor: pointer
+    margin: -18px -20px -18px 0
+    transition: opacity 300ms ease
+    &:hover
+      opacity: .7
