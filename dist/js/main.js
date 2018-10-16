@@ -98,8 +98,10 @@ function () {
   function NeonCarousel() {
     _classCallCheck(this, NeonCarousel);
 
-    this.indicatorItem = document.querySelectorAll('[data-js="dot"]');
-    this.carouselItem = document.querySelectorAll('[data-js="slide"]');
+    this.carouselItem = document.querySelectorAll('.expenses-list__list-item');
+    this.indicatorItem = document.querySelectorAll('.expenses-list__slider-dot');
+    var sliderItemWidth = document.getElementsByClassName('expenses-list__list-item')[0].offsetWidth + 100;
+    document.getElementsByClassName('expenses-list__list')[0].style.width = sliderItemWidth * this.carouselItem.length + 'px';
     this.indicatorIndex();
   }
 
@@ -123,13 +125,6 @@ function () {
       return itemMargin + itemWidth;
     }
   }, {
-    key: "removeActive",
-    value: function removeActive(el) {
-      for (var i = 0; i < this.indicatorItem.length; i++) {
-        el.classList.remove('active');
-      }
-    }
-  }, {
     key: "indicatorIndex",
     value: function indicatorIndex() {
       var _this = this;
@@ -138,14 +133,11 @@ function () {
         var card = _this.carouselItem[i];
         var indicator = _this.indicatorItem[i];
         indicator.addEventListener('click', function () {
-          for (var _i = 0; _i < _this.indicatorItem.length; _i++) {
-            _this.indicatorItem[_i].classList.remove('active');
-          }
-
-          if (i === parseInt(card.getAttribute('data-carousel'))) {
-            indicator.classList.add('active');
-            document.querySelector('.carousel__wrapper').style.marginLeft = '-' + _this.itemStyles() * i + 'px';
-          }
+          Array.from(_this.indicatorItem).map(function (i) {
+            return i.classList.remove('active');
+          });
+          indicator.classList.add('active');
+          document.querySelector('.expenses-list__list').style.marginLeft = '-' + 600 * i + 'px';
         });
       };
 

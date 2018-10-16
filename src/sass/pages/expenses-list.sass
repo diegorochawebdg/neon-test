@@ -29,11 +29,29 @@
     display: block
 
 .expenses-list
+  &__wrapper
+    min-height: 510px
+    width: 100%
+    position: relative
+    overflow: hidden
+  &__list
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
+    position: absolute
+    left: 50%
+    transform: translateX(-250px)
+    transition: all 600ms ease
+
   &__list-item
     background: $list_blue
     border-radius: 20px
-    max-width: 500px
+    width: 500px
+    max-width: 100%
     min-height: 510px
+    margin-right: 100px
+    &:last-child
+      margin-right: 0
     &.empty
       display: flex
       align-items: center
@@ -81,3 +99,20 @@
     transition: opacity 300ms ease
     &:hover
       opacity: .7
+  &__slider-dots
+    margin: 20px auto
+    display: flex
+    align-items: center
+    justify-content: center
+  &__slider-dot
+    width: 20px
+    height: 20px
+    display: block
+    border-radius: 5px
+    border: solid 1px $dot
+    margin: 0 5px
+    transition: border-color 300ms ease
+    cursor: pointer
+    &.active
+      border-color: $dot_active
+      cursor: initial

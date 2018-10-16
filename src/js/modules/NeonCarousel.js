@@ -1,7 +1,15 @@
 class NeonCarousel {
   constructor() {
-    this.indicatorItem = document.querySelectorAll('[data-js="dot"]');
-    this.carouselItem = document.querySelectorAll('[data-js="slide"]');
+    this.carouselItem = document.querySelectorAll('.expenses-list__list-item');
+    this.indicatorItem = document.querySelectorAll(
+      '.expenses-list__slider-dot'
+    );
+    let sliderItemWidth =
+      document.getElementsByClassName('expenses-list__list-item')[0]
+        .offsetWidth + 100;
+
+    document.getElementsByClassName('expenses-list__list')[0].style.width =
+      sliderItemWidth * this.carouselItem.length + 'px';
     this.indicatorIndex();
   }
 
@@ -25,25 +33,16 @@ class NeonCarousel {
     return itemMargin + itemWidth;
   }
 
-  removeActive(el) {
-    for (let i = 0; i < this.indicatorItem.length; i++) {
-      el.classList.remove('active');
-    }
-  }
-
   indicatorIndex() {
     for (let i = 0; i < this.indicatorItem.length; i++) {
       let card = this.carouselItem[i];
       let indicator = this.indicatorItem[i];
+
       indicator.addEventListener('click', () => {
-        for (let i = 0; i < this.indicatorItem.length; i++) {
-          this.indicatorItem[i].classList.remove('active');
-        }
-        if (i === parseInt(card.getAttribute('data-carousel'))) {
-          indicator.classList.add('active');
-          document.querySelector('.carousel__wrapper').style.marginLeft =
-            '-' + this.itemStyles() * i + 'px';
-        }
+        Array.from(this.indicatorItem).map(i => i.classList.remove('active'));
+        indicator.classList.add('active');
+        document.querySelector('.expenses-list__list').style.marginLeft =
+          '-' + 600 * i + 'px';
       });
     }
   }
