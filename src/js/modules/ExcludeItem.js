@@ -1,29 +1,17 @@
 class ExcludeItem {
   constructor() {
-    this.deleteItem = document.querySelectorAll('[data-js="delete"]');
-    this.clickDelete();
+    this.deleteButtons = document.querySelectorAll('.expenses-list__internal-list-remove-item');
+    this.deleteItem();
   }
 
-  clickDelete() {
-    let cardItem = document.querySelectorAll('[data-js="item"]');
-    Array.prototype.forEach.call(this.deleteItem, function(element, index) {
-      element.addEventListener('click', function(e) {
+  deleteItem() {
+    Array.prototype.forEach.call(this.deleteButtons, (element, index) => {
+      element.addEventListener('click', e => {
         e.preventDefault();
-        Array.prototype.forEach.call(cardItem, function(el, ind) {
-          if (index === ind) {
-            el.classList.add('remove');
-            setTimeout(() => {
-              el.parentNode.removeChild(el);
-            }, 500);
-          }
-        });
-        let item = document.querySelectorAll('[data-js="item"]');
-        if (item.length <= 1) {
-          for (let i = 0; i < item.length; i++) {
-            item[i].parentNode.classList.add('empty');
-            item[i].previousSibling.classList.remove('icon--hide');
-          }
-        }
+        element.parentNode.classList.add('remove');
+        setTimeout(() => {
+          element.parentNode.remove();
+        }, 1000);
       });
     });
   }
