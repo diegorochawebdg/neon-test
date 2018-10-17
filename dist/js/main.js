@@ -40,33 +40,20 @@ function () {
   function ExcludeItem() {
     _classCallCheck(this, ExcludeItem);
 
-    this.deleteItem = document.querySelectorAll('[data-js="delete"]');
-    this.clickDelete();
+    this.deleteButtons = document.querySelectorAll('.expenses-list__internal-list-remove-item');
+    this.deleteItem();
   }
 
   _createClass(ExcludeItem, [{
-    key: "clickDelete",
-    value: function clickDelete() {
-      var cardItem = document.querySelectorAll('[data-js="item"]');
-      Array.prototype.forEach.call(this.deleteItem, function (element, index) {
+    key: "deleteItem",
+    value: function deleteItem() {
+      Array.prototype.forEach.call(this.deleteButtons, function (element, index) {
         element.addEventListener('click', function (e) {
           e.preventDefault();
-          Array.prototype.forEach.call(cardItem, function (el, ind) {
-            if (index === ind) {
-              el.classList.add('remove');
-              setTimeout(function () {
-                el.parentNode.removeChild(el);
-              }, 500);
-            }
-          });
-          var item = document.querySelectorAll('[data-js="item"]');
-
-          if (item.length <= 1) {
-            for (var i = 0; i < item.length; i++) {
-              item[i].parentNode.classList.add('empty');
-              item[i].previousSibling.classList.remove('icon--hide');
-            }
-          }
+          element.parentNode.classList.add('remove');
+          setTimeout(function () {
+            element.parentNode.remove();
+          }, 1000);
         });
       });
     }
@@ -96,54 +83,61 @@ var NeonCarousel =
 /*#__PURE__*/
 function () {
   function NeonCarousel() {
+    var _this = this;
+
     _classCallCheck(this, NeonCarousel);
 
+    //vars
+    this.resizeTimeout;
+    this.currentSlide = 0;
     this.carouselItem = document.querySelectorAll('.expenses-list__list-item');
     this.indicatorItem = document.querySelectorAll('.expenses-list__slider-dot');
-    var sliderItemWidth = document.getElementsByClassName('expenses-list__list-item')[0].offsetWidth + 100;
-    document.getElementsByClassName('expenses-list__list')[0].style.width = sliderItemWidth * this.carouselItem.length + 'px';
-    this.indicatorIndex();
+    this.sliderItemWidth = window.getComputedStyle(this.carouselItem[0]).width; //add events
+
+    this.setCarouselWidth();
+    this.dots(); //update the slider width on window resize
+
+    window.addEventListener('resize', function () {
+      window.clearTimeout(_this.resizeTimeout);
+      _this.resizeTimeout = window.setTimeout(function () {
+        _this.setCarouselWidth();
+
+        _this.setCarouselMargin();
+      }, 100);
+    });
   }
 
   _createClass(NeonCarousel, [{
-    key: "hasClass",
-    value: function hasClass(el, elClass) {
-      return (' ' + el.className + ' ').indexOf(' ' + elClass + ' ') > -1;
-    }
-  }, {
-    key: "getItemStyle",
-    value: function getItemStyle() {
-      for (var i = 0; i < this.carouselItem.length; i++) {
-        if (this.hasClass(this.carouselItem[i], 'active')) return window.getComputedStyle(this.carouselItem[i], null);
-      }
-    }
-  }, {
-    key: "itemStyles",
-    value: function itemStyles() {
-      var itemMargin = parseInt(this.getItemStyle().marginLeft.replace('px', '')) + parseInt(this.getItemStyle().marginRight.replace('px', ''));
-      var itemWidth = parseInt(this.getItemStyle().width.replace('px', ''));
-      return itemMargin + itemWidth;
-    }
-  }, {
-    key: "indicatorIndex",
-    value: function indicatorIndex() {
-      var _this = this;
+    key: "dots",
+    value: function dots() {
+      var _this2 = this;
 
       var _loop = function _loop(i) {
-        var card = _this.carouselItem[i];
-        var indicator = _this.indicatorItem[i];
+        var indicator = _this2.indicatorItem[i];
         indicator.addEventListener('click', function () {
-          Array.from(_this.indicatorItem).map(function (i) {
+          Array.from(_this2.indicatorItem).map(function (i) {
             return i.classList.remove('active');
           });
           indicator.classList.add('active');
-          document.querySelector('.expenses-list__list').style.marginLeft = '-' + 600 * i + 'px';
+          _this2.currentSlide = i;
+
+          _this2.setCarouselMargin();
         });
       };
 
       for (var i = 0; i < this.indicatorItem.length; i++) {
         _loop(i);
       }
+    }
+  }, {
+    key: "setCarouselWidth",
+    value: function setCarouselWidth() {
+      document.querySelector('.expenses-list__list').style.width = window.getComputedStyle(this.carouselItem[0]).width.split('px')[0] * this.carouselItem.length + 'px';
+    }
+  }, {
+    key: "setCarouselMargin",
+    value: function setCarouselMargin() {
+      document.querySelector('.expenses-list__list').style.marginLeft = '-' + window.getComputedStyle(this.carouselItem[0]).width.split('px')[0] * this.currentSlide + 'px';
     }
   }]);
 
