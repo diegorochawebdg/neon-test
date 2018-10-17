@@ -10,17 +10,13 @@ const gulp = require('gulp'),
   imagemin = require('gulp-imagemin'),
   nunjucksRender = require('gulp-nunjucks-render'),
   browserify = require('browserify'),
-  fs = require('fs');
+  source = require('vinyl-source-stream');
 
-gulp.task(
-  'serve',
-  ['scripts', 'sass', 'html', 'fonts', 'images', 'watch'],
-  () => {
-    browserSync.init({
-      server: './dist'
-    });
-  }
-);
+gulp.task('serve', ['scripts', 'sass', 'html', 'fonts', 'images', 'watch'], () => {
+  browserSync.init({
+    server: './dist'
+  });
+});
 
 gulp.task('sass', () => {
   return gulp
@@ -67,7 +63,8 @@ gulp.task('scripts', () => {
   return browserify(['./src/js/main.js'])
     .transform('babelify', { presets: ['@babel/preset-env'] })
     .bundle()
-    .pipe(fs.createWriteStream('./dist/js/main.js'));
+    .pipe(source('main.js'))
+    .pipe(gulp.dest('./dist/js'));
 });
 
 gulp.task('watch', () => {
@@ -75,5 +72,7 @@ gulp.task('watch', () => {
   gulp.watch('./src/html/*.html', ['html']).on('change', browserSync.reload);
   gulp.watch('./src/js/**/*.js', ['scripts']).on('change', browserSync.reload);
 });
+
+gulp.task('build', ['scripts', 'sass', 'html', 'fonts', 'images']);
 
 gulp.task('default', ['serve']);
