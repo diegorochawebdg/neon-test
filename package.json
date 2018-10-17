@@ -1,6 +1,10 @@
 {
   "name": "neon-test",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diegorochawebdg/neon-test"
+  },
   "description": "Teste de front-end para o Banco Neon",
   "main": "gulpfile.js",
   "dependencies": {},
