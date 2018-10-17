@@ -1,50 +1,45 @@
 class NeonCarousel {
   constructor() {
+    //vars
+    this.resizeTimeout;
+    this.currentSlide = 0;
     this.carouselItem = document.querySelectorAll('.expenses-list__list-item');
     this.indicatorItem = document.querySelectorAll(
       '.expenses-list__slider-dot'
     );
-    let sliderItemWidth =
-      document.getElementsByClassName('expenses-list__list-item')[0]
-        .offsetWidth + 100;
+    this.sliderItemWidth = window.getComputedStyle(this.carouselItem[0]).width;
 
-    document.getElementsByClassName('expenses-list__list')[0].style.width =
-      sliderItemWidth * this.carouselItem.length + 'px';
-    this.indicatorIndex();
+    //add events
+    this.setCarouselWidth();
+    this.dots();
+    //update the slider width on window resize
+    window.addEventListener('resize', () => {
+      window.clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = window.setTimeout(() => {
+        this.setCarouselWidth();
+        this.setCarouselMargin();
+      }, 100);
+    });
   }
 
-  hasClass(el, elClass) {
-    return (' ' + el.className + ' ').indexOf(' ' + elClass + ' ') > -1;
-  }
-
-  getItemStyle() {
-    for (let i = 0; i < this.carouselItem.length; i++) {
-      if (this.hasClass(this.carouselItem[i], 'active'))
-        return window.getComputedStyle(this.carouselItem[i], null);
-    }
-  }
-
-  itemStyles() {
-    let itemMargin =
-      parseInt(this.getItemStyle().marginLeft.replace('px', '')) +
-      parseInt(this.getItemStyle().marginRight.replace('px', ''));
-    let itemWidth = parseInt(this.getItemStyle().width.replace('px', ''));
-
-    return itemMargin + itemWidth;
-  }
-
-  indicatorIndex() {
+  dots() {
     for (let i = 0; i < this.indicatorItem.length; i++) {
-      let card = this.carouselItem[i];
       let indicator = this.indicatorItem[i];
-
       indicator.addEventListener('click', () => {
         Array.from(this.indicatorItem).map(i => i.classList.remove('active'));
         indicator.classList.add('active');
-        document.querySelector('.expenses-list__list').style.marginLeft =
-          '-' + 600 * i + 'px';
+        this.currentSlide = i;
+        this.setCarouselMargin();
       });
     }
+  }
+
+  setCarouselWidth() {
+    document.querySelector('.expenses-list__list').style.width = window.getComputedStyle(this.carouselItem[0]).width.split('px')[0] * this.carouselItem.length + 'px';
+  }
+
+  setCarouselMargin() {
+    document.querySelector('.expenses-list__list').style.marginLeft = '-' + window.getComputedStyle(this.carouselItem[0]).width.split('px')[0] * this.currentSlide + 'px';
   }
 }
 
